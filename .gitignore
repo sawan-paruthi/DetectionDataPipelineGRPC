@@ -1,0 +1,9 @@
+server/venv/
+server/server_logs.csv
+server/received_image.jpg
+server/checkpoints
+server/__pycache__
+
+client/venv/
+
+__pycache__
