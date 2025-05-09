@@ -2,14 +2,15 @@ import grpc
 import odservice_pb2_grpc, odservice_pb2
 import grpc.aio
 import asyncio
+import io
 
 
 # when video is comming from the client and stored at client server
-async def image_file_generator(file_path):
+async def image_file_generator(file_path, model_name):
     with open(file_path, 'rb') as f:
         chunk_size = 1024 * 1024  # 1MB chunks
         while chunk := f.read(chunk_size):
-            yield odservice_pb2.ImageRequest(image_file=chunk, model="loloyolo")
+            yield odservice_pb2.ImageRequest(image_file=chunk, model=model_name)
 
 
 # when video is comming from user from the flask app
@@ -64,10 +65,13 @@ async def send_log_entry_to_grpc(request):
 
 
 async def run():
-    async with grpc.aio.insecure_channel('localhost:50051') as channel:
-        stub = odservice_pb2_grpc.OdServiceStub(channel)
-        response = await stub.UploadImage(image_file_generator("C:\\Users\\12514\\Desktop\\LicensePlateDetectorGRPC\\client\\data\\testBL.jpg"))
-        print(f"Response: {response.message}, Success: {response.success}")
+    
+    model_name = 'lp-yolov5n.pt'
+    file_path = "C:\\Users\\12514\\Desktop\\LicensePlateDetectorGRPC\\client\\data\\testBL.jpg"
+    with open(file_path, 'rb') as f:
+        in_memory_file = io.BytesIO(f.read())
+    response = await upload_image_to_grpc(in_memory_file, model_name)
+    print(response)
 
 if __name__ == '__main__':
     asyncio.run(run())

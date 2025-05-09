@@ -56,7 +56,10 @@ class OdService(odservice_pb2_grpc.OdServiceServicer):
             message=result['message'],
             process_time = result['process_time'],
             throughput = result['throughput'],
-            power = result['power']
+            power = result['power'],
+            cpu_utilized = result['cpu_utilized'],
+            memory_utilized = result['memory_utilized']
+
         )
     
     
@@ -83,22 +86,6 @@ class OdService(odservice_pb2_grpc.OdServiceServicer):
                 message=f"Failed to process image: {error_message}"
             )
 
-
-
-    def get_location_from_ip(self, ip_address):
-        try:
-            response = requests.get(f"http://ip-api.com/json/{ip_address}")
-            data = response.json()
-            if data['status'] == 'success':
-                return {
-                    'country': data['country'],
-                    'region': data['regionName'],
-                    'city': data['city']
-                }
-            else:
-                return {"error": "Unable to retrieve location"}
-        except Exception as e:
-            return {"error": str(e)}
 
 async def serve() -> None:
     server = grpc.aio.server()

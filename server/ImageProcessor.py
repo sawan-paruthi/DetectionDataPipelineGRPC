@@ -53,7 +53,10 @@ class ImageProcessor:
                 "message": "Image Process Successfully",
                 "process_time":process_time,
                 "throughput":throughput,
-                "power":avg_power
+                "power":avg_power,
+                "cpu_utilized":cpu_used_percent,
+                "memory_utilized": memory_used_mb
+
             }
             print(metrics) 
             return metrics

@@ -12,6 +12,8 @@ message ImageResponse {
   float process_time = 3;
   float throughput = 4;
   float power = 5;
+  float cpu_utilized = 6;
+  float memory_utilized = 7;
 }
 
 message LogEntry {
@@ -22,6 +24,8 @@ message LogEntry {
   float total_response_time = 5;
   float throughput = 6;
   float power = 7;
+  float cpu_utilized = 8;
+  float memory_utilized = 9;
 }
 
 message LogResponse {
