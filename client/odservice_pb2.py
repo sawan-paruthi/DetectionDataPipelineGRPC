@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fodservice.proto\x12\todservice\"1\n\x0cImageRequest\x12\x12\n\nimage_file\x18\x01 \x01(\x0c\x12\r\n\x05model\x18\x02 \x01(\t\"j\n\rImageResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x14\n\x0cprocess_time\x18\x03 \x01(\x02\x12\x12\n\nthroughput\x18\x04 \x01(\x02\x12\r\n\x05power\x18\x05 \x01(\x02\"\xa6\x01\n\x08LogEntry\x12\x14\n\x0cservice_name\x18\x01 \x01(\t\x12\x12\n\nip_address\x18\x02 \x01(\t\x12\x14\n\x0cprocess_time\x18\x03 \x01(\x02\x12\x1a\n\x12grpc_response_time\x18\x04 \x01(\x02\x12\x1b\n\x13total_response_time\x18\x05 \x01(\x02\x12\x12\n\nthroughput\x18\x06 \x01(\x02\x12\r\n\x05power\x18\x07 \x01(\x02\"/\n\x0bLogResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t2\x90\x01\n\tOdService\x12\x44\n\x0bUploadImage\x12\x17.odservice.ImageRequest\x1a\x18.odservice.ImageResponse\"\x00(\x01\x12=\n\x0cSendLogEntry\x12\x13.odservice.LogEntry\x1a\x16.odservice.LogResponse\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0fodservice.proto\x12\todservice\"1\n\x0cImageRequest\x12\x12\n\nimage_file\x18\x01 \x01(\x0c\x12\r\n\x05model\x18\x02 \x01(\t\"\x99\x01\n\rImageResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t\x12\x14\n\x0cprocess_time\x18\x03 \x01(\x02\x12\x12\n\nthroughput\x18\x04 \x01(\x02\x12\r\n\x05power\x18\x05 \x01(\x02\x12\x14\n\x0c\x63pu_utilized\x18\x06 \x01(\x02\x12\x17\n\x0fmemory_utilized\x18\x07 \x01(\x02\"\xd5\x01\n\x08LogEntry\x12\x14\n\x0cservice_name\x18\x01 \x01(\t\x12\x12\n\nip_address\x18\x02 \x01(\t\x12\x14\n\x0cprocess_time\x18\x03 \x01(\x02\x12\x1a\n\x12grpc_response_time\x18\x04 \x01(\x02\x12\x1b\n\x13total_response_time\x18\x05 \x01(\x02\x12\x12\n\nthroughput\x18\x06 \x01(\x02\x12\r\n\x05power\x18\x07 \x01(\x02\x12\x14\n\x0c\x63pu_utilized\x18\x08 \x01(\x02\x12\x17\n\x0fmemory_utilized\x18\t \x01(\x02\"/\n\x0bLogResponse\x12\x0f\n\x07success\x18\x01 \x01(\x08\x12\x0f\n\x07message\x18\x02 \x01(\t2\x90\x01\n\tOdService\x12\x44\n\x0bUploadImage\x12\x17.odservice.ImageRequest\x1a\x18.odservice.ImageResponse\"\x00(\x01\x12=\n\x0cSendLogEntry\x12\x13.odservice.LogEntry\x1a\x16.odservice.LogResponse\"\x00\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -33,12 +33,12 @@ if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
   _globals['_IMAGEREQUEST']._serialized_start=30
   _globals['_IMAGEREQUEST']._serialized_end=79
-  _globals['_IMAGERESPONSE']._serialized_start=81
-  _globals['_IMAGERESPONSE']._serialized_end=187
-  _globals['_LOGENTRY']._serialized_start=190
-  _globals['_LOGENTRY']._serialized_end=356
-  _globals['_LOGRESPONSE']._serialized_start=358
-  _globals['_LOGRESPONSE']._serialized_end=405
-  _globals['_ODSERVICE']._serialized_start=408
-  _globals['_ODSERVICE']._serialized_end=552
+  _globals['_IMAGERESPONSE']._serialized_start=82
+  _globals['_IMAGERESPONSE']._serialized_end=235
+  _globals['_LOGENTRY']._serialized_start=238
+  _globals['_LOGENTRY']._serialized_end=451
+  _globals['_LOGRESPONSE']._serialized_start=453
+  _globals['_LOGRESPONSE']._serialized_end=500
+  _globals['_ODSERVICE']._serialized_start=503
+  _globals['_ODSERVICE']._serialized_end=647
 # @@protoc_insertion_point(module_scope)

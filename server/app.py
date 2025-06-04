@@ -22,7 +22,6 @@ class OdService(odservice_pb2_grpc.OdServiceServicer):
         self.image_processed_flag = True
     
     async def UploadImage(self, request_iterator, context):
-        global ot_time
         first=True
         total_data = b""
         model_name=""

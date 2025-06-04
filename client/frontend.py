@@ -79,7 +79,9 @@ async def upload_image():
             "process_time": round(response.process_time,4),
             "grpc_response_time": round(grpc_system_response_time,4),
             "throughput": round(response.throughput,4),
-            "power": round(response.power,4)
+            "power": round(response.power,4),
+            "cpu_utilized": response.cpu_utilized,
+            "memory_utilized": response.memory_utilized
         })
 
     

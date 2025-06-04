@@ -83,7 +83,8 @@ class ImageProcessor:
     def add_logs(self, log_message):
         print("ot time is")
         print(log_message.process_time)
-
+        print("#######################################################")
+        print(log_message)
         self.log_entry.add_to_csv(log_message)
         # self.log_entry.add_user_data(log_message)
         # self.log_entry.add_model_data(log_message)

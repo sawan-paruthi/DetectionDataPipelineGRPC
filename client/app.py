@@ -45,7 +45,9 @@ async def send_log_entry_to_grpc(request):
             grpc_response_time = data['grpc_response_time'],
             total_response_time = data['total_response_time'],
             throughput = data['throughput'],
-            power = data['power']
+            power = data['power'],
+            cpu_utilized = data['cpu_utilized'],
+            memory_utilized = data['memory_utilized']
         )
 
 

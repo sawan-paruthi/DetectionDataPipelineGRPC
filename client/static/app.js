@@ -54,11 +54,13 @@ async function uploadVideo() {
             const startTime = performance.now();
 
             const response = await fetch('/upload', {
-                method: 'POST',
+                method: 'POST', 
                 body: formData
             });
 
             const result = await response.json();
+            console.log("result recived from 1st request");
+            console.log(result)
             const endTime = performance.now();
             const roundTripTime = endTime - startTime; 
             result["service_name"] = model

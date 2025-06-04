@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client-Server Sequence Diagram</title>
+    <!-- Include Mermaid library -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        /* Container for the diagram */
+        #diagram {
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Target Mermaid SVG text elements for larger font */
+        .mermaid svg {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Participant labels (Client, Server) */
+        .mermaid .label {
+            font-size: 30px !important; /* Increased from 20px to 30px */
+            font-weight: bold;
+        }
+
+        /* Message text (e.g., ImageRequest, LogEntry) */
+        .mermaid .messageText {
+            font-size: 20px !important; /* Increased from 18px to 26px */
+        }
+
+        /* Notes text (e.g., "Initiate client-side streaming") */
+        .mermaid .noteText {
+            font-size: 20px !important; /* Increased from 16px to 24px */
+        }
+
+        /* Ensure notes are readable with larger font */
+        .mermaid .note {
+            padding: 12px; /* Increased from 10px to 15px for more space */
+        }
+    </style>
+</head>
+<body>
+    <h1>Client-Server Interaction Sequence Diagram</h1>
+    <div id="diagram">
+        <div class="mermaid">
+            sequenceDiagram
+                participant Client
+                participant Server
+                Note over Client: Initiate client-side streaming
+                loop A Complete Single Request
+                rect rgba(200, 200, 255, 0.2)
+                    note over Client, Server: [UploadImage]
+                    Client->>Server: ImageRequest (image_file, model)
+                    Note over Server: Data processed and metrics computed
+                    Server-->>Client: ImageResponse (success, message, process_time, throughput, power, cpu_utilized, memory_utilized)
+                end
+                Note over Client: Compute response metrics at client
+                rect rgba(200, 255, 200, 0.1)
+                    note over Client, Server: [SendLogEntry]
+                    Client->>Server: LogEntry (service_name, ip_address, process_time, grpc_response_time, total_response_time, throughput, power, cpu_utilized, memory_utilized)
+                    Note over Server: Log entry persisted to database
+                    Server-->>Client: LogResponse (success, message)
+                end
+                end
+        </div>
+    </div>
+
+    <script>
+        // Initialize Mermaid with the specified config
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'mc', // Apply mc theme
+            sequence: {
+                diagramMarginX: 50,
+                diagramMarginY: 20,
+                actorMargin: 50,
+                look: 'classic' // Apply classic look
+            }
+        });
+    </script>
+</body>
+</html>
