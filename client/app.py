@@ -36,9 +36,11 @@ async def send_log_entry_to_grpc(request):
         stub = odservice_pb2_grpc.OdServiceStub(channel)
 
         data = request.get_json()
-        
+
         # Create a LogEntry message
         log_message = odservice_pb2.LogEntry(
+            success = data['success'],
+            message = data['message'],
             service_name = data['service_name'],
             ip_address = request.remote_addr,
             process_time = data['process_time'],

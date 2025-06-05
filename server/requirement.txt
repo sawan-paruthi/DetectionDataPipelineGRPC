@@ -48,5 +48,6 @@ ultralytics==8.3.11
 ultralytics-thop==2.0.9
 urllib3==2.2.3
 wheel==0.44.0
-
+ipwhois
 psutil
+tensorflow_hub

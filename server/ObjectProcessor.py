@@ -23,6 +23,13 @@ class ObjectProcessor:
         print(f"detector inside objectprocessor {self.detector}")
         
         # return detections
+        if self.detector[:9]=="lp-rtdetr":
+            print("inside if")
+            model_path = os.path.join("checkpoints", "yolo", self.detector)
+            Model = Yolo(model_path)
+            detections = Model.detect(image_path)
+            return detections
+        
         if self.detector[:7]=="lp-yolo":
             print("inside if")
             model_path = os.path.join("checkpoints", "yolo", self.detector)

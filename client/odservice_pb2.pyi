@@ -31,7 +31,9 @@ class ImageResponse(_message.Message):
     def __init__(self, success: bool = ..., message: _Optional[str] = ..., process_time: _Optional[float] = ..., throughput: _Optional[float] = ..., power: _Optional[float] = ..., cpu_utilized: _Optional[float] = ..., memory_utilized: _Optional[float] = ...) -> None: ...
 
 class LogEntry(_message.Message):
-    __slots__ = ("service_name", "ip_address", "process_time", "grpc_response_time", "total_response_time", "throughput", "power", "cpu_utilized", "memory_utilized")
+    __slots__ = ("success", "message", "service_name", "ip_address", "process_time", "grpc_response_time", "total_response_time", "throughput", "power", "cpu_utilized", "memory_utilized")
+    SUCCESS_FIELD_NUMBER: _ClassVar[int]
+    MESSAGE_FIELD_NUMBER: _ClassVar[int]
     SERVICE_NAME_FIELD_NUMBER: _ClassVar[int]
     IP_ADDRESS_FIELD_NUMBER: _ClassVar[int]
     PROCESS_TIME_FIELD_NUMBER: _ClassVar[int]
@@ -41,6 +43,8 @@ class LogEntry(_message.Message):
     POWER_FIELD_NUMBER: _ClassVar[int]
     CPU_UTILIZED_FIELD_NUMBER: _ClassVar[int]
     MEMORY_UTILIZED_FIELD_NUMBER: _ClassVar[int]
+    success: bool
+    message: str
     service_name: str
     ip_address: str
     process_time: float
@@ -50,7 +54,7 @@ class LogEntry(_message.Message):
     power: float
     cpu_utilized: float
     memory_utilized: float
-    def __init__(self, service_name: _Optional[str] = ..., ip_address: _Optional[str] = ..., process_time: _Optional[float] = ..., grpc_response_time: _Optional[float] = ..., total_response_time: _Optional[float] = ..., throughput: _Optional[float] = ..., power: _Optional[float] = ..., cpu_utilized: _Optional[float] = ..., memory_utilized: _Optional[float] = ...) -> None: ...
+    def __init__(self, success: bool = ..., message: _Optional[str] = ..., service_name: _Optional[str] = ..., ip_address: _Optional[str] = ..., process_time: _Optional[float] = ..., grpc_response_time: _Optional[float] = ..., total_response_time: _Optional[float] = ..., throughput: _Optional[float] = ..., power: _Optional[float] = ..., cpu_utilized: _Optional[float] = ..., memory_utilized: _Optional[float] = ...) -> None: ...
 
 class LogResponse(_message.Message):
     __slots__ = ("success", "message")

@@ -17,15 +17,17 @@ message ImageResponse {
 }
 
 message LogEntry {
-  string service_name = 1;
-  string ip_address = 2;
-  float process_time = 3;
-  float grpc_response_time = 4;
-  float total_response_time = 5;
-  float throughput = 6;
-  float power = 7;
-  float cpu_utilized = 8;
-  float memory_utilized = 9;
+  bool success = 1;
+  string message = 2;
+  string service_name = 3;
+  string ip_address = 4;
+  float process_time = 5;
+  float grpc_response_time = 6;
+  float total_response_time = 7;
+  float throughput = 8;
+  float power = 9;
+  float cpu_utilized = 10;
+  float memory_utilized = 11;
 }
 
 message LogResponse {
