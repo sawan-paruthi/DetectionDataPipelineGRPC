@@ -51,3 +51,4 @@ wheel==0.44.0
 ipwhois
 psutil
 tensorflow_hub
+dotenv

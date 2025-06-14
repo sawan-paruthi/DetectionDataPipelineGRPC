@@ -11,13 +11,13 @@ class Parameters:
     def __init__(self):
         pass
     # Function to calculate image size in bits
-    def get_image_size_in_bits(image_path):
+    def get_image_size_in_bits(self, image_path):
         file_size_bytes = os.path.getsize(image_path)  # File size in bytes
         file_size_bits = file_size_bytes * 8  # Convert to bits (1 byte = 8 bits)
         return file_size_bits
 
     # Function to get real-time power consumption (for Nvidia GPUs)
-    def get_power_usage_nvidia():
+    def get_power_usage_nvidia(self):
         try:
             # Execute nvidia-smi to get power consumption
             output = subprocess.check_output(['nvidia-smi', '--query-gpu=power.draw', '--format=csv,noheader,nounits'])
@@ -28,14 +28,14 @@ class Parameters:
             return 0  # Return 0 if unable to fetch
         
     # Function to calculate energy required
-    def calculate_energy(power_watts, process_time):
+    def calculate_energy(self, power_watts, process_time):
         return power_watts * process_time  # Energy in joules (watts * seconds)
 
-    def calculate_latency(start_time, end_time):
+    def calculate_latency(self, start_time, end_time):
         return end_time - start_time
 
     # Get local IP address and subnet mask
-    def get_local_ip_info():
+    def get_local_ip_info(self):
         net_info = psutil.net_if_addrs()
 
         for interface, addrs in net_info.items():
@@ -45,7 +45,7 @@ class Parameters:
         return None, None
 
     # Calculate subnet address from local IP and subnet mask
-    def calculate_subnet(ip, netmask):
+    def calculate_subnet(self, ip, netmask):
         try:
             if ip == '127.0.0.1' or ip == 'localhost':
                 return 'Not applicable'
@@ -60,7 +60,7 @@ class Parameters:
             return None
         
     # Calculate CIDR notation from subnet mask
-    def calculate_cidr(netmask):
+    def calculate_cidr(self, netmask):
         try:
             if netmask in ['Not available', 'Unknown Class or Invalid IP Address']:
                 return 'Not available'  # Skip invalid netmask cases
@@ -73,7 +73,7 @@ class Parameters:
 
 
     # Get public IP using an external service (ipify)
-    def get_public_ip():
+    def get_public_ip(self):
         try:
             
             public_ip = requests.get('https://api.ipify.org').text
@@ -84,7 +84,7 @@ class Parameters:
         
 
     # Get ISP and location details using ipinfo.io
-    def get_ip_info(ip):
+    def get_ip_info(self, ip):
         try:
             if ip == '127.0.0.1' or ip == 'localhost':
                 return 'Not applicable'
@@ -97,7 +97,7 @@ class Parameters:
         
 
     # Get ASN using ipwhois
-    def get_asn_info(ip):
+    def get_asn_info(self, ip):
         try:
             if ip == '127.0.0.1' or ip == 'localhost':
                 return 'Not applicable', 'Not applicable'
@@ -109,7 +109,7 @@ class Parameters:
             return None, None
 
 
-    def get_default_netmask(ip):
+    def get_default_netmask(self, ip):
         try:
             if ip == '127.0.0.1' or ip == 'localhost':
                 return 'Not applicable'

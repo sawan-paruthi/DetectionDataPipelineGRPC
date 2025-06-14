@@ -7,21 +7,15 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), "protobuffs"))
 from protobuffs import odservice_pb2, odservice_pb2_grpc
 from ImageProcessor import ImageProcessor
-import requests
-
+import argparse
 load_dotenv()
-
-
-PORT = os.getenv("LICENSE_PLATE_DETECTOR_PORT")
-
-
 
 
 class OdService(odservice_pb2_grpc.OdServiceServicer):
 
-    def __init__(self):
+    def __init__(self, service, prefix):
         # Initialize the object tracker once in the service class
-        self.image_processor = ImageProcessor()
+        self.image_processor = ImageProcessor(service, prefix)
     
     async def UploadImage(self, request_iterator, context):
         total_data = b""
@@ -91,15 +85,23 @@ class OdService(odservice_pb2_grpc.OdServiceServicer):
         #     )
 
 
-async def serve() -> None:
+async def serve(port, service, prefix) -> None:
     server = grpc.aio.server()
-    odservice_pb2_grpc.add_OdServiceServicer_to_server(OdService(), server)
-    listen_addr = f"[::]:{PORT}"
+    odservice_pb2_grpc.add_OdServiceServicer_to_server(OdService(service, prefix), server)
+    listen_addr = f"[::]:{port}"
     server.add_insecure_port(listen_addr)
     logging.info("Starting server on %s", listen_addr)
     await server.start()
     await server.wait_for_termination()
 
 if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser(description="add service name and prefix for model")
+    parser.add_argument('--service', required=True, type=str, help='Service type. For exaample - License Plate Service')
+    parser.add_argument('--prefix', required=True, type=str, help='prefix for Service type. For exaample - lp for License Plate Service')
+    parser.add_argument('--port', required=True, type=str, help='port on which service should host. For exaample - 50051')
+    args = parser.parse_args()
+    
+
     logging.basicConfig(level=logging.INFO)
-    asyncio.run(serve())
+    asyncio.run(serve(args.port, args.service, args.prefix))

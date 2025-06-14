@@ -11,18 +11,17 @@ load_dotenv()
 LOG_FILE = os.getenv("LOG_FILE")
 DB_URL = os.getenv("DB_URL") 
 
-task_name = "License_Plate_Detection"
-
 
 class LogEntry:
-    def __init__(self):
+    def __init__(self, service_name):
         self.parameters = Parameters()
+        self.task_name = service_name
 
     def add_to_csv(self, log_message):
         log_entry_csv = {
             'message':log_message.message,
             'success':log_message.success,
-            'task_name':task_name,
+            'task_name':self.task_name,
             'service_name': log_message.service_name,
             'ip_address': log_message.ip_address,
             'location': self.parameters.get_location_from_ip(log_message.ip_address),
@@ -148,7 +147,7 @@ class LogEntry:
             model_result = {
                     'ip_address': log_messages.ip_address,
                     'model_name': log_messages.service_name,
-                    'service_type': task_name,
+                    'service_type': self.task_name,
                     'latency_time': round(log_messages.total_response_time - log_messages.process_time, 4),
                     'cpu_usage': round(log_messages.cpu_utilized, 2),
                     'memory_usage': round(log_messages.memory_utilized, 2),

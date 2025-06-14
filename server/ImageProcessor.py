@@ -11,71 +11,9 @@ import psutil
 
 
 class ImageProcessor:
-    def __init__(self):
-        self.object_processor = ObjectProcessor()
-        self.log_entry = LogEntry()
-
-
-    # def process_image(self, model_name):
-    #     global model
-    #     try:
-    #         global model
-
-    #         print(model_name)
-    #         initial_power = self.get_power_usage_nvidia()
-    #         process = psutil.Process(os.getpid())
-    #         cpu_start = process.cpu_percent(interval=None)  # Start measuring CPU
-    #         memory_info_start = process.memory_info().rss
-    #         start_time=time.time()
-
-    #         # inference start
-    #         self.object_processor.load_model(model_name)
-    #         detections = self.object_processor.detect_objects("received_image.jpg")
-    #         # inference end
-
-    #         end_time=time.time()
-    #         final_power = self.get_power_usage_nvidia()
-    #         cpu_end = process.cpu_percent(interval=None)  # This needs a short delay to be meaningful
-    #         memory_info_end = process.memory_info().rss  # in bytes
-
-    #         # Metrics calculation
-    #         process_time = round((end_time-start_time)*1000,4)
-    #         avg_power = round(((initial_power + final_power) / 2),4)
-    #         throughput = round(self.get_throughput(process_time,"received_image.jpg"),4)
-    #         cpu_used_percent = round(cpu_end, 2)
-    #         memory_used_mb = round((memory_info_end - memory_info_start) / (1024 * 1024), 4) 
-    #         # vedio Size to be sent
-            
-    #         print("detections")
-    #         print(detections)
-    #         print(f"process time is {process_time}")
-    #         metrics = {
-    #             "message": "Image Process Successfully",
-    #             "process_time":process_time,
-    #             "throughput":throughput,
-    #             "power":avg_power,
-    #             "cpu_utilized":cpu_used_percent,
-    #             "memory_utilized": memory_used_mb
-
-    #         }
-    #         print(metrics) 
-    #         return metrics
-
-    #     except FileNotFoundError as fnf_error:
-    #         # Handle file not found errors
-    #         return fnf_error
-
-    #     except ValueError as val_error:
-    #         # Handle specific value-related issues
-    #         return val_error
-
-    #     except AttributeError as attr_error:
-    #         # Handle missing attributes or methods
-    #         return attr_error
-
-    #     except Exception as e:
-    #         # Catch all other unexpected errors
-    #         return e
+    def __init__(self, servicename, prefix):
+        self.object_processor = ObjectProcessor(prefix)
+        self.log_entry = LogEntry(servicename)
 
 
     def process_image(self, model_name):
