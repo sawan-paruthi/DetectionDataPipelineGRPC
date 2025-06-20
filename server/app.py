@@ -28,12 +28,17 @@ class OdService(odservice_pb2_grpc.OdServiceServicer):
             if image_request.model:
                 model_name = image_request.model  # Capture model name from request
 
-        with open('received_image.jpg', 'wb') as f:
+        
+        inbound_path = os.path.abspath("inbound")
+        os.makedirs(inbound_path, exist_ok=True)
+        file_path = os.path.join(inbound_path, "received_image.jpg")
+
+        with open(file_path, 'wb') as f:
             f.write(total_data)
         
         # print(f"model name is:{model_name}")
         
-        result = self.image_processor.process_image(model_name)
+        result = self.image_processor.process_image(model_name, img_path=file_path)
 
         # Respond to client
         return odservice_pb2.ImageResponse(

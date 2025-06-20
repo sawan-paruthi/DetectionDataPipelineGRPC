@@ -18,7 +18,7 @@ class ImageProcessor:
         self.params = Parameters()
 
 
-    def process_image(self, model_name):
+    def process_image(self, model_name, img_path):
 
         # Record system resource usage before processing
         initial_power = self.params.get_power_usage_nvidia()
@@ -33,7 +33,7 @@ class ImageProcessor:
         try:
             # print(model_name)
             self.object_processor.load_model(model_name)
-            detections = self.object_processor.detect_objects("received_image.jpg")
+            detections = self.object_processor.detect_objects(img_path)
 
         except FileNotFoundError as fnf_error:
             inference_error = f"FileNotFoundError: {fnf_error}"
@@ -62,7 +62,7 @@ class ImageProcessor:
         # Compute metrics
         process_time = round((end_time - start_time) * 1000, 8)
         avg_power = round((initial_power + final_power) / 2, 4)
-        throughput = round(self.params.get_throughput(process_time, "received_image.jpg"), 4)
+        throughput = round(self.params.get_throughput(process_time, img_path), 4)
         cpu_used_percent = round(cpu_end, 2)  ##might be wrong
         memory_used_mb = round((memory_info_end - memory_info_start) / (1024 * 1024), 4)
 
