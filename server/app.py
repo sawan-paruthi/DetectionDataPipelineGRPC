@@ -13,17 +13,17 @@ load_dotenv()
 
 class OdService(odservice_pb2_grpc.OdServiceServicer):
 
-    def __init__(self, service, prefix):
+    def __init__(self, service, prefix, server_id):
         # Initialize the object tracker once in the service class
-        self.image_processor = ImageProcessor(service, prefix)
+        self.image_processor = ImageProcessor(service, prefix, server_id)
     
     async def UploadImage(self, request_iterator, context):
         total_data = b""
         model_name=""
         self.image_processed_flag=True
-        print("inside upload image function")
+        # print("inside upload image function")
         async for image_request in request_iterator:
-            print("inside request iterator")
+            # print("inside request iterator")
             total_data += image_request.image_file
             if image_request.model:
                 model_name = image_request.model  # Capture model name from request
@@ -31,23 +31,9 @@ class OdService(odservice_pb2_grpc.OdServiceServicer):
         with open('received_image.jpg', 'wb') as f:
             f.write(total_data)
         
-        print(f"model name is:{model_name}")
+        # print(f"model name is:{model_name}")
         
         result = self.image_processor.process_image(model_name)
-
-        # if isinstance(result, Exception):
-        #     self.video_processed_flag=False
-        #     print(f"Error occurred while processing image: {str(result)}")
-        #     # Respond to client with failure message
-        #     return odservice_pb2.ImageResponse(
-        #         success=False,
-        #         message=f"Failed to process image: {str(result)}",
-        #         process_time = result['process_time'],
-        #         throughput = result['throughput'],
-        #         power = result['power'],
-        #         cpu_utilized = result['cpu_utilized'],
-        #         memory_utilized = result['memory_utilized']
-        #     )
 
         # Respond to client
         return odservice_pb2.ImageResponse(
@@ -67,30 +53,19 @@ class OdService(odservice_pb2_grpc.OdServiceServicer):
         
         if success:
         # Return a success response
-            logging.info("Logs saved to DB", exc_info=False)
+            logging.info("App: Logs saved to DB", exc_info=False)
             return odservice_pb2.LogResponse(success=success, message=log_status)
         else:
-            logging.error("Failed to save Logs", exc_info=False)
+            logging.error("App: Failed to save Logs", exc_info=False)
             return odservice_pb2.LogResponse(success=success, message=log_status)
 
-    
-        # except Exception as e:
-        # # Handle any unexpected errors
-        #     error_message = f"Error saving log entry: {str(e)}"
-        #     print(error_message)  # Log the error on the server side
-        #     # 
-        #     return odservice_pb2.LogResponse(
-        #         success=False,
-        #         message=f"Failed to save logs: {error_message}"
-        #     )
 
-
-async def serve(port, service, prefix) -> None:
+async def serve(port, service, prefix, server_id) -> None:
     server = grpc.aio.server()
-    odservice_pb2_grpc.add_OdServiceServicer_to_server(OdService(service, prefix), server)
+    odservice_pb2_grpc.add_OdServiceServicer_to_server(OdService(service, prefix, server_id), server)
     listen_addr = f"[::]:{port}"
     server.add_insecure_port(listen_addr)
-    logging.info("Starting server on %s", listen_addr)
+    logging.info("App: Starting server on %s", listen_addr)
     await server.start()
     await server.wait_for_termination()
 
@@ -100,8 +75,9 @@ if __name__ == "__main__":
     parser.add_argument('--service', required=True, type=str, help='Service type. For exaample - License Plate Service')
     parser.add_argument('--prefix', required=True, type=str, help='prefix for Service type. For exaample - lp for License Plate Service')
     parser.add_argument('--port', required=True, type=str, help='port on which service should host. For exaample - 50051')
+    parser.add_argument('--serverid', required=True, type=str, help='ID of server on which this application is running')
     args = parser.parse_args()
     
 
     logging.basicConfig(level=logging.INFO)
-    asyncio.run(serve(args.port, args.service, args.prefix))
+    asyncio.run(serve(args.port, args.service, args.prefix, args.serverid))

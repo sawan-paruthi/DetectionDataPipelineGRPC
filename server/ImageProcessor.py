@@ -6,30 +6,32 @@ import csv
 import logging
 from ObjectProcessor import ObjectProcessor
 from LogEntry import LogEntry
+from parameters import Parameters
 import subprocess
 import psutil
 
 
 class ImageProcessor:
-    def __init__(self, servicename, prefix):
+    def __init__(self, servicename, prefix, server_id):
         self.object_processor = ObjectProcessor(prefix)
-        self.log_entry = LogEntry(servicename)
+        self.log_entry = LogEntry(servicename, server_id)
+        self.params = Parameters()
 
 
     def process_image(self, model_name):
 
         # Record system resource usage before processing
-        initial_power = self.get_power_usage_nvidia()
+        initial_power = self.params.get_power_usage_nvidia()
         process = psutil.Process(os.getpid())
         cpu_start = process.cpu_percent(interval=None)
         memory_info_start = process.memory_info().rss
-        start_time = time.time()
+        start_time = time.perf_counter()
 
         detections = []
         inference_error = None
 
         try:
-            print(model_name)
+            # print(model_name)
             self.object_processor.load_model(model_name)
             detections = self.object_processor.detect_objects("received_image.jpg")
 
@@ -52,15 +54,15 @@ class ImageProcessor:
             inference_error = f"UnexpectedError: {str(e)}"
 
         # Measure final system resource usage
-        end_time = time.time()
-        final_power = self.get_power_usage_nvidia()
+        end_time = time.perf_counter()
+        final_power = self.params.get_power_usage_nvidia()
         cpu_end = process.cpu_percent(interval=None)
         memory_info_end = process.memory_info().rss
 
         # Compute metrics
-        process_time = round((end_time - start_time) * 1000, 4)
+        process_time = round((end_time - start_time) * 1000, 8)
         avg_power = round((initial_power + final_power) / 2, 4)
-        throughput = round(self.get_throughput(process_time, "received_image.jpg"), 4)
+        throughput = round(self.params.get_throughput(process_time, "received_image.jpg"), 4)
         cpu_used_percent = round(cpu_end, 2)  ##might be wrong
         memory_used_mb = round((memory_info_end - memory_info_start) / (1024 * 1024), 4)
 
@@ -82,16 +84,13 @@ class ImageProcessor:
             "detections": detections
         }
 
-        print(metrics)
         return metrics
 
 
 
     def add_logs(self, log_message):
-        print("ot time is")
-        print(log_message.process_time)
         print("#######################################################")
-        print(log_message)
+        logging.info(f"ImageProcessor: {log_message}")
 
         errors = []
 
@@ -104,14 +103,19 @@ class ImageProcessor:
 
         try:
             self.log_entry.add_model_data(log_message)
+
         except Exception as e:
-            logging.error("Failed to add model data", exc_info=False)
+            logging.error("ImageProcessor: Failed to add model data", exc_info=False)
             errors.append(f"add_model_data: {e}")
 
         try:
-            self.log_entry.add_to_csv(log_message)
+            if errors: 
+                db_status = False
+            else:
+                db_status = True
+            self.log_entry.add_to_csv(log_message, db_status)
         except Exception as e:
-            logging.error("Failed to add csv", exc_info=False)
+            logging.error("ImageProcessor: Failed to add csv", exc_info=False)
             errors.append(f"add_to_csv: {e}")
 
         # Handle frontend string generation
@@ -124,11 +128,11 @@ class ImageProcessor:
         # Set final status
         if errors:
             success = False
-            log_status = "Failed: " + "; ".join(errors)
+            log_status = "ImageProcessor: Failed: " + "; ".join(errors)
             logging.error(log_status, exc_info=False)
         else:
             success = True
-            log_status = "Logs saved to DB"
+            log_status = "ImageProcessor: Logs saved to DB"
             logging.info(log_status, exc_info=False)
 
         return success, log_status
@@ -136,21 +140,4 @@ class ImageProcessor:
 
 
         
-    def get_throughput(self,ot_time, video_path):
-        file_size_bytes = os.path.getsize(video_path)
-
-        file_size_mb = file_size_bytes / (1024 * 1024)
-        if ot_time==0:
-            return 'err process time is 0'
-        return round((file_size_mb / (ot_time / 1000)) * 8, 4)    #throughput Mbps
-
-
-    def get_power_usage_nvidia(self):
-        try:
-           
-            output = subprocess.check_output(['nvidia-smi', '--query-gpu=power.draw', '--format=csv,noheader,nounits'])
-            power_watts = float(output.decode('utf-8').strip())
-            return power_watts
-        except Exception as e:
-            print(f"Error fetching power consumption: {e}")
-            return 0  
+    

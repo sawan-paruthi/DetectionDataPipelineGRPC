@@ -6,10 +6,12 @@ import socket
 import requests
 from ipwhois import IPWhois
 import ipaddress
+import torch
 
 class Parameters:
     def __init__(self):
         pass
+ 
     # Function to calculate image size in bits
     def get_image_size_in_bits(self, image_path):
         file_size_bytes = os.path.getsize(image_path)  # File size in bytes
@@ -26,13 +28,16 @@ class Parameters:
         except Exception as e:
             print(f"Error fetching power consumption: {e}")
             return 0  # Return 0 if unable to fetch
-        
+
+
     # Function to calculate energy required
     def calculate_energy(self, power_watts, process_time):
         return power_watts * process_time  # Energy in joules (watts * seconds)
 
+
     def calculate_latency(self, start_time, end_time):
         return end_time - start_time
+
 
     # Get local IP address and subnet mask
     def get_local_ip_info(self):
@@ -43,6 +48,7 @@ class Parameters:
                 if addr.family == socket.AF_INET and not addr.address.startswith("127."):
                     return addr.address, addr.netmask  # Return local IP and subnet mask
         return None, None
+
 
     # Calculate subnet address from local IP and subnet mask
     def calculate_subnet(self, ip, netmask):
@@ -58,7 +64,8 @@ class Parameters:
         except Exception as e:
             print("Error calculating subnet address:", e)
             return None
-        
+
+
     # Calculate CIDR notation from subnet mask
     def calculate_cidr(self, netmask):
         try:
@@ -74,8 +81,7 @@ class Parameters:
 
     # Get public IP using an external service (ipify)
     def get_public_ip(self):
-        try:
-            
+        try:     
             public_ip = requests.get('https://api.ipify.org').text
             return public_ip
         except Exception as e:
@@ -146,3 +152,25 @@ class Parameters:
                 return {"error": "Unable to retrieve location"}
         except Exception as e:
             return {"error": str(e)}
+        
+
+    def get_throughput(self,ot_time, img_path):
+        file_size_bytes = os.path.getsize(img_path)
+
+        file_size_mb = file_size_bytes / (1024 * 1024)
+        if ot_time==0:
+            return 'err process time is 0'
+        return round((file_size_mb / (ot_time / 1000)) * 8, 4)    #throughput Mbps
+
+
+    def get_device(self):
+    # Check for any GPU backend
+        if torch.cuda.is_available():  # NVIDIA GPUs
+            return "cuda"
+        elif torch.backends.mps.is_available():  # Apple Silicon GPUs
+            return "mps"
+        elif hasattr(torch.version, "hip") and torch.version.hip:  # AMD GPUs with ROCm
+            return "rocm"
+        else:
+            return "cpu" 
+
