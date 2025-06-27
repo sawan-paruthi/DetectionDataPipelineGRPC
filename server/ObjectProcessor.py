@@ -31,6 +31,7 @@ class ObjectProcessor:
             model_path = os.path.join(abs_path, "checkpoints", "yolo", self.detector)
             Model = Yolo(model_path)
             detections = Model.detect(image_path)
+            logging.info(f"ObjectProcessor: Detections from inference: {detections}")
             return detections
         
         elif self.detector[:7]==f"{self.prefix}-yolo":
@@ -40,23 +41,28 @@ class ObjectProcessor:
             model_path = os.path.join(abs_path, "checkpoints", "yolo", self.detector)
             Model = Yolo(model_path)
             detections = Model.detect(image_path)
+            logging.info(f"ObjectProcessor: Detections from inference: {detections}")
             return detections
         
-        elif self.detector[:5] == f"{self.prefix}-tf":
+        elif self.detector[:5] == f"{self.prefix}-tf": #lp-tf-fasterrcnn_resnet50.pth
             logging.info(f"ObjectProcessor: Model Loaded: {self.detector}")
             abs_path = os.path.dirname(os.path.abspath(__file__))
             checkpoint_path= model_path = os.path.join(abs_path, "checkpoints", "tensorflow", self.detector)
-            detector = TensorFlowDetection(self.detector[2:], confidence_threshold=0.5)
+            model_name = self.detector[6:]
+            detector = TensorFlowDetection(model_name[:-4], confidence_threshold=0.5)
             detections = detector.detect(image_path)
+            logging.info(f"ObjectProcessor: Detections from inference: {detections}")
             return detections        
 
 
-        elif self.detector[:5] == f"{self.prefix}-tv":
+        elif self.detector[:5] == f"{self.prefix}-tv":  #lp-tv-fasterrcnn_resnet50.pth
             logging.info(f"ObjectProcessor: Model Loaded: {self.detector}")
             abs_path = os.path.dirname(os.path.abspath(__file__))
             checkpoint_path = os.path.join(abs_path, "checkpoints", "torchvision", self.detector)
-            detector = TorchVisionDetection(self.detector[:-4], checkpoint_path=checkpoint_path, confidence_threshold=0.5)
+            model_name = self.detector[6:]
+            detector = TorchVisionDetection(model_name[:-4], checkpoint_path=checkpoint_path, confidence_threshold=0.5)
             detections = detector.detect(image_path)
+            logging.info(f"ObjectProcessor: Detections from inference: {detections}")
             return detections
 
         else:

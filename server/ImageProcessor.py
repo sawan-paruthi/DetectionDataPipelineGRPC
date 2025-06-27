@@ -7,7 +7,7 @@ import logging
 from ObjectProcessor import ObjectProcessor
 from LogEntry import LogEntry
 from parameters import Parameters
-import subprocess
+import gc
 import psutil
 
 
@@ -80,9 +80,10 @@ class ImageProcessor:
             "throughput": throughput,
             "power": avg_power,
             "cpu_utilized": cpu_used_percent,
-            "memory_utilized": memory_used_mb,
-            "detections": detections
+            "memory_utilized": memory_used_mb
         }
+        del detections
+        gc.collect()
 
         return metrics
 
@@ -117,13 +118,6 @@ class ImageProcessor:
         except Exception as e:
             logging.error("ImageProcessor: Failed to add csv", exc_info=False)
             errors.append(f"add_to_csv: {e}")
-
-        # Handle frontend string generation
-        try:
-            log_entry_string = self.log_entry.get_frontend_string(log_message)
-        except Exception as e:
-            errors.append(f"get_frontend_string: {e}")
-            log_entry_string = "N/A"
 
         # Set final status
         if errors:

@@ -28,13 +28,13 @@ class TensorFlowDetection:
         if model_name=="efficientdetd5":
             return hub.load("https://tfhub.dev/tensorflow/efficientdet/d5/1")
         
-        if model_name=="faster-rcnn-restnet50":
+        if model_name=="fasterrcnn_restnet50":
             return hub.load("https://tfhub.dev/tensorflow/faster_rcnn/resnet50_v1_640x640/1")
         
-        if model_name=="faster-rcnn-restnet-v2":
+        if model_name=="fasterrcnn_restnet_v2":
             return hub.load("https://tfhub.dev/tensorflow/faster_rcnn/inception_resnet_v2_640x640/1")
         
-        if model_name=="faster-rcnn-restnet-101":
+        if model_name=="fasterrcnn_restnet101":
             return hub.load("https://tfhub.dev/tensorflow/faster_rcnn/resnet101_v1_640x640/1")
         
         if model_name=="retinanet":

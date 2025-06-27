@@ -55,22 +55,6 @@ class LogEntry:
                 writer.writerow(log_entry_csv)
         except:
             raise FileNotFoundError
-
-
-    def get_frontend_string(self, log_message):
-        log_entry_frontend = {
-            'service_name': log_message.service_name,
-            'ip_address': log_message.ip_address,
-            'location': self.parameters.get_location_from_ip(log_message.ip_address),
-            'grpc_response_time': str(round(log_message.grpc_response_time,2)) + " ms",  # Convert to string
-            'grpc_system_latency': str(round(log_message.grpc_response_time - log_message.process_time, 2)) + " ms",  # Convert to string
-            'total_response_time': str(round(log_message.total_response_time,2)) + " ms",  # Convert to string
-            'total_latency': str(round(log_message.total_response_time - log_message.process_time, 2)) + " ms",  # Convert to string
-            'throughput': str(round(log_message.throughput,2)) + " Mbps"  # Convert to string
-        }
-        log_entry_string = json.dumps(log_entry_frontend, indent=4)
-
-        return log_entry_string
     
 
 

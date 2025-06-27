@@ -22,92 +22,8 @@ class TorchVisionDetection:
         self.transform = transforms.Compose([
             transforms.ToTensor()
         ])
-        # self.num_classes = num_classes  
         self.model = self.load_model(model_name)
         self.model.eval()
-
-    # def load_model(self, model_name):
-    #     if model_name == "fasterrcnn_resnet50":
-    #         model = models.detection.fasterrcnn_resnet50_fpn(weights=None)
-
-    #     elif model_name == "fasterrcnn_mobilenet_v3_large":
-    #         model = models.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=None)
-
-    #     elif model_name == "fasterrcnn_resnet50_v2":
-    #         model = models.detection.fasterrcnn_resnet50_fpn_v2(weights=None)
-
-    #     elif model_name == "retinanet_resnet50":
-    #         model = models.detection.retinanet_resnet50_fpn(weights=None)
-
-    #     elif model_name == "retinanet_resnet50_v2":
-    #         model = models.detection.retinanet_resnet50_fpn_v2(weights=None)
-
-    #     elif model_name == "ssd300_vgg16":
-    #         model = models.detection.ssd300_vgg16(weights=None)
-
-    #     elif model_name == "ssdlite320_mobilenet_v3_large":
-    #         model = models.detection.ssdlite320_mobilenet_v3_large(weights=None)
-
-    #     elif model_name == "fcos_resnet50":
-    #         model = models.detection.fcos_resnet50_fpn(weights=None)
-    #     else:
-    #         raise ValueError(f"Model {model_name} not supported!")
- 
-        
-    #     in_features = model.roi_heads.box_predictor.cls_score.in_features
-    #     model.roi_heads.box_predictor = FastRCNNPredictor(in_features, self.num_classes)
-
-
-    #     if self.checkpoint_path:
-    #         checkpoint = torch.load(self.checkpoint_path, map_location=torch.device('cpu'))
-    #         #model.load_state_dict(checkpoint, strict=False)
-    #         model.load_state_dict(checkpoint)
-    #         print(f"Fine-tuned weights loaded from {self.checkpoint_path}")
-
-    #     return model
-
-    # def load_model(self, model_name):
-    #     if model_name == "fasterrcnn_resnet50":
-    #         model = models.detection.fasterrcnn_resnet50_fpn(weights=None)
-    #         in_features = model.roi_heads.box_predictor.cls_score.in_features
-    #         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, self.num_classes)
-
-    #     elif model_name == "fasterrcnn_mobilenet_v3_large":
-    #         model = models.detection.fasterrcnn_mobilenet_v3_large_fpn(weights=None)
-    #         in_features = model.roi_heads.box_predictor.cls_score.in_features
-    #         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, self.num_classes)
-
-    #     elif model_name == "fasterrcnn_resnet50_v2":
-    #         model = models.detection.fasterrcnn_resnet50_fpn_v2(weights=None)
-    #         in_features = model.roi_heads.box_predictor.cls_score.in_features
-    #         model.roi_heads.box_predictor = FastRCNNPredictor(in_features, self.num_classes)
-
-    #     elif model_name == "retinanet_resnet50":
-    #         model = models.detection.retinanet_resnet50_fpn(weights=None)
-    #         # Skip head customization unless you explicitly need to
-
-    #     elif model_name == "retinanet_resnet50_v2":
-    #         model = models.detection.retinanet_resnet50_fpn_v2(weights=None)
-
-    #     elif model_name == "ssd300_vgg16":
-    #         model = models.detection.ssd300_vgg16(weights=None)
-
-    #     elif model_name == "ssdlite320_mobilenet_v3_large":
-    #         model = models.detection.ssdlite320_mobilenet_v3_large(weights=None)
-
-    #     elif model_name == "fcos_resnet50":
-    #         model = models.detection.fcos_resnet50_fpn(weights=None)
-
-    #     else:
-    #         raise ValueError(f"Model {model_name} not supported!")
-
-    #     # Load checkpoint if provided
-    #     if self.checkpoint_path:
-    #         checkpoint = torch.load(self.checkpoint_path, map_location=torch.device('cpu'))
-    #         model.load_state_dict(checkpoint)
-    #         print(f"Fine-tuned weights loaded from {self.checkpoint_path}")
-
-    #     return model
 
 
     def load_model(self, model_name):
@@ -143,7 +59,8 @@ class TorchVisionDetection:
             model = models.detection.ssdlite320_mobilenet_v3_large(weights=None)
 
         elif model_name == "fcos_resnet50":
-            model = models.detection.fcos_resnet50_fpn(weights=None)
+            cls_weight_shape = checkpoint['head.classification_head.cls_logits.weight'].shape[0]
+            model = models.detection.fcos_resnet50_fpn(weights=None, num_classes=cls_weight_shape)
 
         else:
             raise ValueError(f"Model {model_name} not supported!")
@@ -153,7 +70,6 @@ class TorchVisionDetection:
         print(f"Fine-tuned weights loaded from {self.checkpoint_path}")
 
         return model
-
 
 
     def detect(self, img_path):
@@ -173,12 +89,14 @@ class TorchVisionDetection:
         return detections
 
 if __name__ == "__main__":
-    img_path = "C:\\Users\\12514\\Desktop\\LicensePlateDetectorGRPC\\server\\received_image.jpg"
-    modelname = "retinanet_resnet50_v2.pth"
-    checkpoint = f"C:\\Users\\12514\\Desktop\\LicensePlateDetectorGRPC\\server\\checkpoints\\torchvision\\{modelname}"
+    img_path = "C:\\Users\\12514\\Desktop\\DetectionDataPipelineGRPC\\server\\inbound\\received_image.jpg"
+    modelname = "fcos_resnet50.pth"
+    checkpoint = "C:\\Users\\12514\\Desktop\\DetectionDataPipelineGRPC\\server\\checkpoints\\torchvision\\fcos_resnet50.pth"
     detector = TorchVisionDetection(modelname[:-4], checkpoint_path=checkpoint, confidence_threshold=0.5)
     detections = detector.detect(img_path)
     print(len(detections))
     print(detections)
+
+
 
 
