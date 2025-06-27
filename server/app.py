@@ -28,8 +28,7 @@ class OdService(odservice_pb2_grpc.OdServiceServicer):
             if image_request.model:
                 model_name = image_request.model  # Capture model name from request
 
-        
-        inbound_path = os.path.abspath("inbound")
+        inbound_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "inbound")
         # print(f"inbound path is {inbound_path}")
         os.makedirs(inbound_path, exist_ok=True)
         file_path = os.path.join(inbound_path, "received_image.jpg")
